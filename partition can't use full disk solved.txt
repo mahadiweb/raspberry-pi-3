@@ -1,0 +1,107 @@
+[root@localhost ~]# parted
+GNU Parted 3.1
+Using /dev/mmcblk0
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) unit MB print free
+Model: SD USD (sd/mmc)
+Disk /dev/mmcblk0: 15978MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End      Size     Type     File system     Flags
+        0.03MB  4.19MB   4.16MB            Free Space
+ 1      4.19MB  304MB    300MB    primary  fat16           boot, lba
+ 2      304MB   816MB    512MB    primary  linux-swap(v1)
+ 3      816MB   2616MB   1800MB   primary  ext4
+        2616MB  15978MB  13362MB           Free Space
+
+(parted) unit gb print free
+Model: SD USD (sd/mmc)
+Disk /dev/mmcblk0: 16.0GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system     Flags
+        0.00GB  0.00GB  0.00GB           Free Space
+ 1      0.00GB  0.30GB  0.30GB  primary  fat16           boot, lba
+ 2      0.30GB  0.82GB  0.51GB  primary  linux-swap(v1)
+ 3      0.82GB  2.62GB  1.80GB  primary  ext4
+        2.62GB  16.0GB  13.4GB           Free Space
+
+(parted) unit MB print free
+Model: SD USD (sd/mmc)
+Disk /dev/mmcblk0: 15978MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End      Size     Type     File system     Flags
+        0.03MB  4.19MB   4.16MB            Free Space
+ 1      4.19MB  304MB    300MB    primary  fat16           boot, lba
+ 2      304MB   816MB    512MB    primary  linux-swap(v1)
+ 3      816MB   2616MB   1800MB   primary  ext4
+        2616MB  15978MB  13362MB           Free Space
+
+(parted) resizepart
+Partition number? 3
+End?  [2616MB]? 15978
+(parted) print
+Model: SD USD (sd/mmc)
+Disk /dev/mmcblk0: 15978MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End      Size     Type     File system     Flags
+ 1      4.19MB  304MB    300MB    primary  fat16           boot, lba
+ 2      304MB   816MB    512MB    primary  linux-swap(v1)
+ 3      816MB   15978MB  15162MB  primary  ext4
+
+(parted) unit gb print free
+Model: SD USD (sd/mmc)
+Disk /dev/mmcblk0: 16.0GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system     Flags
+        0.00GB  0.00GB  0.00GB           Free Space
+ 1      0.00GB  0.30GB  0.30GB  primary  fat16           boot, lba
+ 2      0.30GB  0.82GB  0.51GB  primary  linux-swap(v1)
+ 3      0.82GB  16.0GB  15.2GB  primary  ext4
+        16.0GB  16.0GB  0.00GB           Free Space
+
+(parted) q
+Information: You may need to update /etc/fstab.
+
+[root@localhost ~]# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+mmcblk0     179:0    0 14.9G  0 disk
+├─mmcblk0p2 179:2    0  488M  0 part [SWAP]
+├─mmcblk0p3 179:3    0 14.1G  0 part /
+└─mmcblk0p1 179:1    0  286M  0 part /boot
+
+[root@localhost ~]# sudo resize2fs /dev/mmcblk0p3
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/mmcblk0p3 is mounted on /; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 2
+The filesystem on /dev/mmcblk0p3 is now 3701711 blocks long.
+
+[root@localhost ~]# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+mmcblk0     179:0    0 14.9G  0 disk
+├─mmcblk0p2 179:2    0  488M  0 part [SWAP]
+├─mmcblk0p3 179:3    0 14.1G  0 part /
+└─mmcblk0p1 179:1    0  286M  0 part /boot
+[root@localhost ~]# df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/root      ext4       14G  1.5G   13G  11% /
+devtmpfs       devtmpfs  430M     0  430M   0% /dev
+tmpfs          tmpfs     463M     0  463M   0% /dev/shm
+tmpfs          tmpfs     463M   12M  451M   3% /run
+tmpfs          tmpfs     463M     0  463M   0% /sys/fs/cgroup
+/dev/mmcblk0p1 vfat      286M   50M  237M  18% /boot
+tmpfs          tmpfs      93M     0   93M   0% /run/user/0
+[root@localhost ~]#
