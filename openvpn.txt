@@ -1,0 +1,30 @@
+yum update -y
+yum install wget epel-release -y
+yum install -y openvpn
+
+curl -O https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh
+
+chmod +x openvpn-install.sh
+
+./openvpn-install.sh
+
+echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
+sysctl -p
+
+firewall-cmd --zone=trusted --add-interface=tun0
+firewall-cmd --permanent --zone=trusted --add-interface=tun0
+
+firewall-cmd --permanent --add-service openvpn
+firewall-cmd --permanent --zone=trusted --add-service openvpn
+firewall-cmd --list-service --zone=trusted
+firewall-cmd --add-masquerade
+firewall-cmd --add-masquerade --permanent
+firewall-cmd --query-masquerade
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+firewall-cmd --reload
+
+systemctl start openvpn-server@server.service
+systemctl status openvpn-server@server.service
+
+curl ifconfig.me
+route -n

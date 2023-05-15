@@ -1,0 +1,22 @@
+Install Centos On Raspberry pi-3:
+Link:
+https://wiki.centos.org/SpecialInterestGroup/AltArch/Arm32/RaspberryPi3
+http://isoredirect.centos.org/altarch/7/isos/armhfp/        //32bit
+http://isoredirect.centos.org/altarch/7/isos/aarch64/       //64bit
+
+Install LAMP:
+1.yum install httpd
+2.systemctl enable httpd
+3.systemctl restart httpd
+4.sudo firewall-cmd --add-service=http --permanent
+5. sudo firewall-cmd --add-service=https --permanent
+6.sudo firewall-cmd --reload
+7.sudo firewall-cmd --list-all
+
+8.sudo yum install mariadb-server
+9.systemctl start mariadb
+10.systemctl enable mariadb
+11.mysql_secure_installation //for setup mysql
+
+12.yum install php php-mysql
+13.systemctl restart httpd
